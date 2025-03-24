@@ -52,6 +52,32 @@ func (s *TaskSrv) CreateTask(ctx context.Context, req *types.CreateTaskReq) (res
 	}
 	return ctl.RespSuccess(), nil
 }
+func (s *TaskSrv) ListTask(ctx context.Context, req *types.ListTasksReq) (resp interface{}, err error) {
+	u, err := ctl.GetUserInfo(ctx)
+	if err != nil {
+		util.LogrusObj.Info(err)
+		return
+	}
+	tasks, total, err := dao.NewTaskDao(ctx).ListTask(req.Start, req.Limit, u.Id)
+	if err != nil {
+		util.LogrusObj.Info(err)
+		return
+	}
+	taskRespList := make([]*types.TaskResp, 0)
+	for _, v := range tasks {
+		taskRespList = append(taskRespList, &types.TaskResp{
+			ID:        v.ID,
+			Title:     v.Title,
+			Content:   v.Content,
+			View:      v.View(),
+			Status:    v.Status,
+			CreatedAt: v.CreatedAt.Unix(),
+			StartTime: v.StartTime,
+			EndTime:   v.EndTime,
+		})
+	}
+	return ctl.RespList(taskRespList, total), nil
+}
 
 func (s *TaskSrv) ShowTask(ctx context.Context, req *types.ShowTaskReq) (resp interface{}, err error) {
 	u, err := ctl.GetUserInfo(ctx)
