@@ -8,7 +8,8 @@ import (
 
 type Task struct {
 	gorm.Model
-	User      User   `gorm:"Uid"`
+	User      User   `gorm:"ForeignKey:Uid"`
+	Uid       uint   `gorm:"not null"`
 	Title     string `gorm:"title"`
 	Status    int    `gorm:"default:0"`
 	Content   string `gorm:"type:longtext"`

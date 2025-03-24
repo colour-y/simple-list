@@ -13,7 +13,7 @@ type UserInfo struct {
 	Id uint `json:"id"`
 }
 
-func GetUserInfor(ctx context.Context) (*UserInfo, error) {
+func GetUserInfo(ctx context.Context) (*UserInfo, error) {
 	user, ok := FromContext(ctx)
 	if !ok {
 		return nil, errors.New("获取用户信息错误")
